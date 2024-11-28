@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672" 
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=password
+    networks:
+      - xd
+
+  input:
+    image: alexbkb0108/inputdirecto:first
+    container_name: input-app
+    environment:
+      - RABBITMQ_URL=amqp://user:password@rabbitmq:5672 
+      - RABBITMQ_QUEUE=cats_queue
+      - RABBITMQ_QUEUE_OUTPUT=output_queue
+    networks:
+      - xd
+    depends_on:
+      - rabbitmq
+    ports:
+      - "3000:3000"
+
+  output:
+    image: alexbkb0108/outputdirecto:first
+    container_name: output-app
+    environment:
+      - RABBITMQ_URL=amqp://user:password@rabbitmq:5672 
+      - RABBITMQ_QUEUE=cats_queue
+      - RABBITMQ_QUEUE_OUTPUT=output_queue
+    networks:
+      - xd
+    depends_on:
+      - rabbitmq 
+
+networks:
+  xd:
+    driver: bridge

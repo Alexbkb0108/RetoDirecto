@@ -1,0 +1,3 @@
+RABBITMQ_URL=amqp://localhost:5672
+RABBITMQ_QUEUE=cats_queue
+RABBITMQ_QUEUE_OUTPUT=output_queue
